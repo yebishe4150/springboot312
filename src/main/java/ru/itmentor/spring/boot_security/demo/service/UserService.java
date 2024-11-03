@@ -3,12 +3,14 @@ package ru.itmentor.spring.boot_security.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.stylesheets.LinkStyle;
 import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.repository.RoleRepository;
 import ru.itmentor.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -35,7 +37,10 @@ public class UserService {
             roles.add(role);
         }
         user.setRoles(roles);
-
         return userRepository.save(user);
+    }
+
+    public List <User> getAllUsers(){
+        return userRepository.findAll();
     }
 }
