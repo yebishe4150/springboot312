@@ -3,7 +3,10 @@ package ru.itmentor.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +19,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "cant blank")
     private String username;
+
+    @NotBlank(message = "pass cant blank ")
+    @Size(min = 3, message = "min 3")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -29,7 +36,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles;
     }
 
     @Override
@@ -85,8 +92,6 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
-
-//   public Collection<? extends GrantedAuthority>g(){return roles;}
 
     public Set<Role> getRoles() {
         return roles;
