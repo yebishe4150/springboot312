@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 */
 
-
+/*
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -54,11 +54,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**").permitAll()  // Разрешение на доступ к API
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/login").permitAll()  // разрешение на доступ к /login
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();  // Использование HTTP Basic аутентификации вместо формы
     }
+*/
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .antMatchers("/", "/index").permitAll()
+                .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/user").hasAnyRole("USER","ADMIN")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().successHandler(successUserHandler)
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
