@@ -1,11 +1,47 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        .user-info {
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<h1>User, welcome spring boot security page!</h1>
+<div class="container">
+    <h1>Информация о пользователе</h1>
 
+    <!-- Информация о текущем пользователе -->
+    <div class="user-info">
+        <p><strong>Имя пользователя:</strong> <span th:text="${user.username}"></span></p>
+        <p><strong>Роль:</strong> <span th:text="${user.roles}"></span></p>
+    </div>
 
-</body>
-</html>
+    <!-- Кнопка выхода -->
+    <a href="/logout" class="button">Выйти</a>
+</div>
+</
