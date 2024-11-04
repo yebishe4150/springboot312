@@ -48,7 +48,7 @@ public class RegisterController {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(password);
 
         Role role1 = roleRepository.findByName(role)
                 .orElseThrow(() -> new RuntimeException("Роль не найдена: " + role));
@@ -59,5 +59,7 @@ public class RegisterController {
         userService.saveUser(user);
         redirectAttributes.addFlashAttribute("success", "Пользователь успешно зарегистрирован");
         return "redirect:/login";
+
+
     }
 }

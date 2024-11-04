@@ -10,7 +10,9 @@ import ru.itmentor.spring.boot_security.demo.repository.RoleRepository;
 import ru.itmentor.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
@@ -29,7 +31,7 @@ public class AdminController {
         model.addAttribute("users", users);
 
         List <Role> roles = roleRepository.findAll();
-        model.addAttribute("roles", roles);
+        model.addAttribute("allRoles", roles);
         return "admin";
     }
 
@@ -39,13 +41,39 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    /*
     @PostMapping("/admin/edit/")
     public String editUser(
             @RequestParam("id") Long id,
             @RequestParam("username") String username,
             @RequestParam("role")Set<String> roles){
+
         userService.updateUser(id, username, roles);
         return "redirect:/admin";
     }
+
+     */
+
+    @PostMapping("/admin/edit/")
+    public String editUser(
+            @RequestParam("id") Long id,
+            @RequestParam("username") String username,
+            @RequestParam("role") Set<String> roleNames) {
+        Set<Role> roles = roleNames.stream()
+                .map(roleRepository::findByName)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+
+        Set<String> roleNamesSet = roles.stream()
+                .map(Role::getName) // Преобразуем обратно в Set<String>
+                .collect(Collectors.toSet());
+
+        userService.updateUser(id, username, roleNamesSet);
+        return "redirect:/admin";
+    }
+
+
+
 
 }

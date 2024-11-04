@@ -27,6 +27,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userDetailsService;
     }
 
+/*
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .antMatchers("/login", "/register", "/logout").permitAll() // Разрешаем доступ ко всем этим URL
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
+                .and()
+                .formLogin()
+                .loginPage("/login") // Указываем страницу логина
+                .permitAll() // Разрешаем доступ ко всем
+                .and()
+                .logout()
+                .logoutUrl("/logout") // URL для логаута
+                .logoutSuccessUrl("/login?logout") // Перенаправление после успешного логаута
+                .invalidateHttpSession(true) // Уничтожаем сессию
+                .deleteCookies("JSESSIONID") // Удаляем куки сессии
+                .permitAll(); // Разрешаем доступ ко всем
+    }
+*/
+/*
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -45,7 +68,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll();
     }
-
+*/
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+            .csrf().disable()
+    //        .and() // Включите CSRF защиту
+            .authorizeRequests()
+            .antMatchers("/register", "/logout").permitAll() // Разрешите доступ к регистрации и логауту
+            .antMatchers("/admin/**").hasRole("ADMIN") // Доступ для администраторов
+            .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Доступ для пользователей и администраторов
+            .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
+            .and()
+            .formLogin() // Используйте форму по умолчанию
+            .permitAll() // Разрешите доступ к форме входа для всех
+            .and()
+            .logout()
+            .logoutUrl("/logout") // URL для логаута
+            .logoutSuccessUrl("/login?logout") // Перенаправление после успешного логаута
+            .invalidateHttpSession(true) // Уничтожить сессию
+            .deleteCookies("JSESSIONID") // Удалить куки сессии
+            .permitAll(); // Разрешите доступ к логауту для всех
+}
     /*
     @Override
     protected void configure(HttpSecurity http) throws Exception {
