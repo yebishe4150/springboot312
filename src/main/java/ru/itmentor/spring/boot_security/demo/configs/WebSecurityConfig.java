@@ -81,7 +81,10 @@ protected void configure(HttpSecurity http) throws Exception {
             .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
             .and()
             .formLogin() // Используйте форму по умолчанию
-            .permitAll() // Разрешите доступ к форме входа для всех
+            .permitAll()
+            .and()
+            .formLogin()
+            .loginPage("/login")// Разрешите доступ к форме входа для всех
             .and()
             .logout()
             .logoutUrl("/logout") // URL для логаута
