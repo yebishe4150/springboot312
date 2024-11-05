@@ -26,28 +26,10 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /*
-    public User saveUser(String username, String password, Set<String> roleNames) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-
-        Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
-            Role role = roleRepository.findByName(roleName)
-                    .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
-            roles.add(role);
-        }
-        user.setRoles(roles);
-        return userRepository.save(user);
-    }
-*/
-
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // Кодируем пароль перед сохранением
         return userRepository.save(user);
     }
-
 
     public  User saveUser(String username, String password, Set<String> roleNames) {
         User user = new User();
@@ -109,5 +91,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Роль не найдена: " + roleName));
     }
 
-
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
 }

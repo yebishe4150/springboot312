@@ -8,6 +8,7 @@ import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.service.UserService;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,25 +29,6 @@ public class UserController {
         // Добавляем пользователя в модель
         model.addAttribute("user", user);
         return "user"; // Возвращаем имя HTML-шаблона
-    }
-
-    @GetMapping("/user/edit")
-    public String editUserPage(Model model, Authentication authentication) {
-        String username = authentication.getName();
-        User user = userService.findByUsername(username);
-        // Добавляем пользователя в модель
-        model.addAttribute("user", user);
-        return "edit-user"; // Имя HTML-шаблона для редактирования
-    }
-
-    @PostMapping("/user/edit")
-    public String editUser(@ModelAttribute User user) {
-        // Преобразование Set<Role> в Set<String> для ролей
-        Set<String> roleNames = user.getRoles().stream()
-                .map(Role::getName) // Предполагается, что у класса Role есть метод getName()
-                .collect(Collectors.toSet());
-        userService.updateUser(user.getId(), user.getUsername(), roleNames); // Обновляем данные
-        return "redirect:/user"; // Перенаправление на страницу пользователя после редактирования
     }
 }
 

@@ -9,6 +9,7 @@ import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.repository.RoleRepository;
 import ru.itmentor.spring.boot_security.demo.service.UserService;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,26 +41,64 @@ public class AdminController {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
-
+    /*
     @GetMapping("/admin/edit/{id}")
     public String editUserPage(@PathVariable Long id, Model model) {
         Optional<User> userOptional = userService.findById(id);
         if (userOptional.isPresent()) {
             model.addAttribute("user", userOptional.get());
+
+            // Получаем список всех доступных ролей
+            List<Role> allRoles = roleRepository.findAll();
+            model.addAttribute("allRoles", allRoles);
+
             return "edit-user"; // Имя HTML файла для редактирования
+        }
+        return "redirect:/admin"; // Если пользователь не найден, перенаправить на страницу админа
+    }
+
+    @PostMapping("/admin/edit")
+    public String editUser(@ModelAttribute User user) {
+        // Получаем все роли из репозитория
+        List<Role> roles = roleRepository.findAll();
+
+        // Преобразуем Set<Role> в Set<String> (т.е. берем имена ролей)
+        Set<String> roleNames = user.getRoles().stream()
+                .map(role -> role.getName())  // Получаем имена ролей
+                .collect(Collectors.toSet());
+
+        // Обновляем пользователя с новым набором ролей
+        userService.updateUser(user.getId(), user.getUsername(), roleNames);
+
+        // Перенаправляем на страницу администрирования
+        return "redirect:/admin";
+    }
+
+     */
+
+
+    @GetMapping("/admin/edit/{id}")
+    public String editUserPage(@PathVariable Long id, Model model) {
+        Optional<User> userOptional = userService.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Role> roles = roleRepository.findAll();  // Получаем все роли из базы данных
+            model.addAttribute("user", user);
+            model.addAttribute("allRoles", roles);  // Передаем список ролей в модель
+            return "edit-user"; // Имя шаблона для редактирования
         }
         return "redirect:/admin"; // Если пользователь не найден, перенаправить на страницу админа
     }
 
 
     @PostMapping("/admin/edit")
-    public String editUser(@ModelAttribute User user) {
-        Set<String> roleNames = user.getRoles().stream()
-                .map(Role::getName) // Получаем имена ролей
-                .collect(Collectors.toSet());
+    public String editUser(@ModelAttribute User user, @RequestParam Set<String> roleNames) {
+        System.out.println("Received roleNames: " + roleNames);
 
+        // Обновляем пользователя
         userService.updateUser(user.getId(), user.getUsername(), roleNames);
-        return "redirect:/admin";
+
+        return "redirect:/admin"; // Перенаправляем на страницу администрирования
     }
 
 }
