@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register via API</title>
+  <script>
+    function registerUser() {
+      const data = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        role: document.getElementById("role").value
+      };
+
+      fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+              .then(response => {
+                if (response.ok) {
+                  return response.json();
+                } else {
+                  throw new Error("Ошибка при регистрации");
+                }
+              })
+              .then(result => {
+                document.getElementById("successMessage").textContent = "Пользователь успешно зарегистрирован через API";
+                document.getElementById("errorMessage").textContent = "";
+              })
+              .catch(error => {
+                document.getElementById("errorMessage").textContent = error.message;
+                document.getElementById("successMessage").textContent = "";
+              });
+    }
+  </script>
+</head>
+<body>
+<div class="container">
+  <h2>Регистрация через API</h2>
+
+  <div class="form-group">
+    <label for="username">Имя пользователя:</label>
+    <input type="text" id="username" name="username" required>
+  </div>
+  <div class="form-group">
+    <label for="password">Пароль:</label>
+    <input type="password" id="password" name="password" required>
+  </div>
+  <div class="form-group">
+    <label for="role">Роль:</label>
+    <select id="role" name="role" required>
+      <option value="ROLE_USER">Пользователь</option>
+      <option value="ROLE_ADMIN">Администратор</option>
+    </select>
+  </div>
+  <button onclick="registerUser()" class="button">Зарегистрироваться через API</button>
+
+  <div id="successMessage" style="color:green;"></div>
+  <div id="errorMessage" style="color:red;"></div>
+</div>
+</body>
+</html>
