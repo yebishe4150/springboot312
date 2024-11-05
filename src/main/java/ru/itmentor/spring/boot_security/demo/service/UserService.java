@@ -49,7 +49,7 @@ public class UserService {
     }
 
 
-    public User saveUser(String username, String password, Set<String> roleNames) {
+    public  User saveUser(String username, String password, Set<String> roleNames) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password)); // Кодируем пароль
@@ -98,5 +98,16 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElse(null);
     }
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id); // userRepository должен возвращать Optional<User>
+    }
+
+
+    public Role findRoleByName(String roleName) {
+        return roleRepository.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("Роль не найдена: " + roleName));
+    }
+
 
 }

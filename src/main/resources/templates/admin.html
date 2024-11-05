@@ -79,21 +79,15 @@
                 <span th:each="role : ${user.roles}" th:text="${role.name} + ' '" style="margin-right: 5px;"></span>
             </td>
             <td>
-                <!-- Форма для редактирования пользователя -->
-                <form th:action="@{/admin/edit}" method="post" class="form-inline">
-                    <input type="hidden" name="id" th:value="${user.id}" />
-                    <input type="text" name="username" th:value="${user.username}" placeholder="Новое имя" class="input-field" />
-                    <select name="role" class="input-field">
-                        <option th:each="role : ${allRoles}" th:value="${role.name}" th:text="${role.name}"></option>
-                    </select>
-                    <button type="submit" class="button">Изменить</button>
-                </form>
+                <!-- Ссылка для редактирования пользователя -->
+                <a th:href="@{/admin/edit/{id}(id=${user.id})}" class="button">Изменить</a>
 
                 <!-- Форма для удаления пользователя -->
                 <form th:action="@{/admin/delete/{id}(id=${user.id})}" method="post" class="form-inline" style="display:inline;">
                     <button type="submit" class="button delete-button">Удалить</button>
                 </form>
             </td>
+
         </tr>
         </tbody>
     </table>

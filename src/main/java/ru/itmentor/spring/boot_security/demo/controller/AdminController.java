@@ -41,39 +41,25 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    /*
-    @PostMapping("/admin/edit/")
-    public String editUser(
-            @RequestParam("id") Long id,
-            @RequestParam("username") String username,
-            @RequestParam("role")Set<String> roles){
-
-        userService.updateUser(id, username, roles);
-        return "redirect:/admin";
-    }
-
-     */
-
-    @PostMapping("/admin/edit/")
-    public String editUser(
-            @RequestParam("id") Long id,
-            @RequestParam("username") String username,
-            @RequestParam("role") Set<String> roleNames) {
-        Set<Role> roles = roleNames.stream()
-                .map(roleRepository::findByName)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-
-        Set<String> roleNamesSet = roles.stream()
-                .map(Role::getName) // Преобразуем обратно в Set<String>
-                .collect(Collectors.toSet());
-
-        userService.updateUser(id, username, roleNamesSet);
-        return "redirect:/admin";
+    @GetMapping("/admin/edit/{id}")
+    public String editUserPage(@PathVariable Long id, Model model) {
+        Optional<User> userOptional = userService.findById(id);
+        if (userOptional.isPresent()) {
+            model.addAttribute("user", userOptional.get());
+            return "edit-user"; // Имя HTML файла для редактирования
+        }
+        return "redirect:/admin"; // Если пользователь не найден, перенаправить на страницу админа
     }
 
 
+    @PostMapping("/admin/edit")
+    public String editUser(@ModelAttribute User user) {
+        Set<String> roleNames = user.getRoles().stream()
+                .map(Role::getName) // Получаем имена ролей
+                .collect(Collectors.toSet());
 
+        userService.updateUser(user.getId(), user.getUsername(), roleNames);
+        return "redirect:/admin";
+    }
 
 }
