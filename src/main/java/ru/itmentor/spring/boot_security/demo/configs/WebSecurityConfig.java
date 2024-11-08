@@ -38,11 +38,9 @@ protected void configure(HttpSecurity http) throws Exception {
     //        .and() // Включите CSRF защиту
             .authorizeRequests()
             .antMatchers("/register","/api/login","/api/register").permitAll() // Разрешите доступ к регистрации и логауту
-    //        .antMatchers(("/api/**")).authenticated()
-            .antMatchers("/api/**").permitAll()
-            .antMatchers("/api/admin/**").hasRole("ADMIN") // Доступ для администраторов
+            .antMatchers("/api/users/**").hasRole("ADMIN") // Доступ для администраторов
             .antMatchers("/admin/**").hasRole("ADMIN") // Доступ для администраторов
-   //         .antMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+            .antMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
             .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Доступ для пользователей и администраторов
             .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
             .and()
@@ -54,7 +52,9 @@ protected void configure(HttpSecurity http) throws Exception {
             .logoutSuccessUrl("/login?logout") // Перенаправление после успешного логаута
             .invalidateHttpSession(true) // Уничтожить сессию
             .deleteCookies("JSESSIONID") // Удалить куки сессии
-            .permitAll(); // Разрешите доступ к логауту для всех
+            .permitAll()
+            .and()
+            .httpBasic();// Разрешите доступ к логауту для всех
     //http.sessionManagement()
     //        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED); // Ожидание сессии для всех запросов
 

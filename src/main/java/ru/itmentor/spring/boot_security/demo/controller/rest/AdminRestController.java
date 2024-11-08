@@ -20,24 +20,11 @@ public class AdminRestController {
         this.userService = userService;
     }
 
-    /*
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity <List<User>> getAllUsers(){
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
-
-     */
-
-    @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public List<UserDTO> getAllUsers(){
         return userService.getAllUsersDTO();
     }
 
-
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity <User> getUserById(@PathVariable Long id){
         return userService.findById(id)
@@ -45,7 +32,7 @@ public class AdminRestController {
                 .orElseGet(() -> ResponseEntity.status(404).build());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity <String> createUser(@RequestBody User user){
         try {
@@ -56,7 +43,6 @@ public class AdminRestController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity <String> updateUser(@PathVariable Long id, @RequestBody User updatedUser){
         return userService.findById(id)
@@ -69,7 +55,6 @@ public class AdminRestController {
                 .orElseGet(() -> ResponseEntity.status(404).build());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity <String> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
