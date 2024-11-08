@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Панель пользователя</title>
+</head>
+<body>
+<h1>Список пользователей</h1>
+
+<table border="1">
+  <tr>
+    <th>ID</th>
+    <th>Имя пользователя</th>
+    <th>Роли</th>
+    <th>Действия</th>
+  </tr>
+  <tr th:each="user : ${users}">
+    <td th:text="${user.id}"></td>
+    <td th:text="${user.username}"></td>
+    <td>
+      <span th:each="role : ${user.roles}" th:text="${role.name}">Роль</span>
+    </td>
+    <td>
+      <!-- Кнопка для перехода на страницу редактирования конкретного пользователя -->
+      <a th:href="@{/user/edit/{id}(id=${user.id})}" class="button">Изменить</a>
+
+      <!-- Кнопка для удаления пользователя -->
+      <form th:action="@{/user/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
+        <button type="submit">Удалить</button>
+      </form>
+    </td>
+  </tr>
+</table>
+
+<!-- Ссылка для перехода на страницу добавления нового пользователя -->
+<a href="/user/add">Добавить нового пользователя</a>
+
+</body>
+</html>

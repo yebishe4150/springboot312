@@ -6,9 +6,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +21,7 @@ import ru.itmentor.spring.boot_security.demo.service.UserDetailsServiceImp;
 
 @Configuration
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImp userDetailsService;
     private final SuccessUserHandler successUserHandler;
@@ -34,16 +37,16 @@ protected void configure(HttpSecurity http) throws Exception {
             .csrf().disable()
     //        .and() // Включите CSRF защиту
             .authorizeRequests()
-            .antMatchers("/register","api/login","api/register").permitAll() // Разрешите доступ к регистрации и логауту
-            .antMatchers(("/api/**")).permitAll()
+            .antMatchers("/register","/api/login","/api/register").permitAll() // Разрешите доступ к регистрации и логауту
+    //        .antMatchers(("/api/**")).authenticated()
+            .antMatchers("/api/**").permitAll()
+            .antMatchers("/api/admin/**").hasRole("ADMIN") // Доступ для администраторов
             .antMatchers("/admin/**").hasRole("ADMIN") // Доступ для администраторов
+   //         .antMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
             .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Доступ для пользователей и администраторов
             .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
             .and()
-            .formLogin() // Используйте форму по умолчанию
-            .permitAll()
-            .and()
-            .formLogin().successHandler(successUserHandler)
+            .formLogin().successHandler(successUserHandler).permitAll()
             .loginPage("/login")// Разрешите доступ к форме входа для всех
             .and()
             .logout()
@@ -52,6 +55,9 @@ protected void configure(HttpSecurity http) throws Exception {
             .invalidateHttpSession(true) // Уничтожить сессию
             .deleteCookies("JSESSIONID") // Удалить куки сессии
             .permitAll(); // Разрешите доступ к логауту для всех
+    //http.sessionManagement()
+    //        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED); // Ожидание сессии для всех запросов
+
 }
 
     @Override

@@ -72,6 +72,7 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ username, password })
+      credentials: 'same-origin'
     });
 
     const messageElement = document.getElementById('message');

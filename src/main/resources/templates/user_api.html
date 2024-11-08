@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Info</title>
+</head>
+<body>
+<h1>Welcome, <span id="username">Loading...</span></h1>
+<h2>Roles:</h2>
+<ul id="roles"></ul>
+
+<script>
+  // Функция для получения информации о пользователе через API
+  async function getUserInfo() {
+    try {
+      const response = await fetch('/api/user/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // Без токена, потому что Spring Security использует сессию
+        }
+      });
+
+      if (response.ok) {
+        const user = await response.json();
+        // Заполняем имя пользователя
+        document.getElementById('username').textContent = user.username;
+
+        // Заполняем роли пользователя
+        const rolesList = document.getElementById('roles');
+        user.roles.forEach(role => {
+          const listItem = document.createElement('li');
+          listItem.textContent = role;
+          rolesList.appendChild(listItem);
+        });
+      } else {
+        console.error('Failed to fetch user data');
+        alert('Failed to load user data');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while fetching user data');
+    }
+  }
+
+  // Загружаем данные пользователя при загрузке страницы
+  window.onload = getUserInfo;
+</script>
+</body>
+</html>

@@ -6,13 +6,12 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.stylesheets.LinkStyle;
 import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
+import ru.itmentor.spring.boot_security.demo.model.UserDTO;
 import ru.itmentor.spring.boot_security.demo.repository.RoleRepository;
 import ru.itmentor.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -93,5 +92,26 @@ public class UserService {
 
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
+    }
+
+    public List<UserDTO> getAllUsersDTO() {
+        List<User> users = userRepository.findAll();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            List<String> roles = user.getRoles().stream()
+                    .map(role -> role.getName())
+                    .collect(Collectors.toList());
+            userDTOs.add(new UserDTO(user.getId(), user.getUsername(), roles));
+        }
+        return userDTOs;
+    }
+
+    public UserDTO getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+        List<String> roles = user.getRoles().stream()
+                .map(role -> role.getName())
+                .collect(Collectors.toList());
+        return new UserDTO(user.getId(), user.getUsername(), roles);
     }
 }
